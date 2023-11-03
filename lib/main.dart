@@ -38,16 +38,29 @@ class _FooPageState extends State<FooPage> {
   bool _almostCapacity = false;
   final int _capacityWarning = 135; // Number of ppl in Foo resulting in warning
 
+  int _totGuests() {
+    return fields[0] + fields[1];
+  }
+
   void _increase(int field) {
-    int tot = fields[0] + fields[1];
-    if (tot >= _capacityWarning && !_almostCapacity) {
+    if (_totGuests() >= _capacityWarning && !_almostCapacity) {
       setState(() {
         _almostCapacity = true;
       });
     }
-    if (field != 2 || tot > fields[2]) {
+    if (field == 1 && fields[0] == fields[1]) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => WarningDialog(type: "nonMemberFull"),
+      );
+    } else if (field == 2 && _totGuests() <= fields[2]) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => WarningDialog(type: "smokers"),
+      );
+    } else if (field != 2 || _totGuests() > fields[2]) {
       setState(() {
-        if (tot >= _capacityWarning && !_almostCapacity) {
+        if (_totGuests() >= _capacityWarning && !_almostCapacity) {
           _almostCapacity = true;
         }
         fields[field]++;
@@ -56,26 +69,16 @@ class _FooPageState extends State<FooPage> {
   }
 
   void _decrease(int field) {
-    int totGuests = fields[0] + fields[1];
-    if (totGuests <= _capacityWarning && _almostCapacity) {
+    if (_totGuests() <= _capacityWarning && _almostCapacity) {
       setState(() {
         _almostCapacity = false;
       });
     }
 
-    if (totGuests <= fields[2] && field != 2) {
+    if (_totGuests() <= fields[2] && field != 2) {
       showDialog<String>(
         context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Är verkligen alla och röker?'),
-          content: const Text('Ta bort rökare först'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+        builder: (BuildContext context) => WarningDialog(type: "smokers"),
       );
     } else if (fields[field] > 0) {
       setState(() {
@@ -134,7 +137,7 @@ class _FooPageState extends State<FooPage> {
           Text("Antal personer i lokalen",
               style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 10),
-          Text('${fields[0] + fields[1] - fields[2]}',
+          Text('${_totGuests() - fields[2]}',
               style: Theme.of(context).textTheme.headlineLarge),
         ]);
   }
@@ -147,31 +150,19 @@ class _FooPageState extends State<FooPage> {
         maintainState: true, //NEW
         child: ListTile(
             tileColor: Colors.red,
-            title: Text(
-              "Det får plats ${widget.fooCapacity - (fields[0] + fields[1])} till i lokalen",
-              style: Theme.of(context).textTheme.headlineSmall,
+            title: RichText(
               textAlign: TextAlign.center,
+              text: TextSpan(
+                text: 'Det får plats ',
+                style: Theme.of(context).textTheme.headlineSmall,
+                children: <TextSpan>[
+                  TextSpan(
+                      text: '${widget.fooCapacity - _totGuests()}',
+                      style: const TextStyle(fontWeight: FontWeight.w800)),
+                  const TextSpan(text: ' till i lokalen'),
+                ],
+              ),
             )));
-  }
-
-  Widget _buildFields(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          _totField(context),
-          Column(
-            // mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _counterField(context, 0, "Antal medlemmar"),
-              _counterField(context, 1, "Antal icke-medlemmar"),
-              _counterField(context, 2, "Röker"),
-              const SizedBox(
-                height: 70,
-              )
-            ],
-          )
-        ]);
   }
 
   @override
@@ -180,7 +171,56 @@ class _FooPageState extends State<FooPage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: Stack(
-            children: <Widget>[_warningBar(context), _buildFields(context)]));
+        body: Stack(children: <Widget>[
+          _warningBar(context),
+          Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _totField(context),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    _counterField(context, 0, "Antal medlemmar"),
+                    _counterField(context, 1, "Antal icke-medlemmar"),
+                    _counterField(context, 2, "Röker"),
+                    const SizedBox(
+                      height: 70,
+                    )
+                  ],
+                )
+              ])
+        ]));
+  }
+}
+
+class WarningDialog extends StatelessWidget {
+  final String type;
+
+  static final Map<String, Map> text = {
+    "nonMemberFull": {
+      "title": "Det finns inte plats för fler externa!",
+      "content": "Säg åt dom att bli medlemmar eller vänta!!!"
+    },
+    "smokers": {
+      "title": "Är verkligen alla och röker?",
+      "content": "Ta bort rökare först"
+    }
+  };
+
+  WarningDialog({super.key, required this.type})
+      : assert(text.keys.contains(type));
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(text[type]?["title"]),
+      content: Text(text[type]?["content"]),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: const Text('OK'),
+        ),
+      ],
+    );
   }
 }
