@@ -36,7 +36,7 @@ class _FooPageState extends State<FooPage> {
   // Fields[2]: Smokers
   List<int> fields = [0, 0, 0];
   bool _almostCapacity = false;
-  final int _capacityWarning = 25; // Number of ppl in Foo resulting in warning
+  final int _capacityWarning = 135; // Number of ppl in Foo resulting in warning
 
   void _increase(int field) {
     int tot = fields[0] + fields[1];
@@ -97,7 +97,7 @@ class _FooPageState extends State<FooPage> {
               ElevatedButton(
                 onPressed: () => _increase(field),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(8),
                 ),
                 child: const Icon(Icons.add),
               ),
@@ -108,7 +108,7 @@ class _FooPageState extends State<FooPage> {
               ElevatedButton(
                 onPressed: () => _decrease(field),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(8),
                 ),
                 child: const Icon(Icons.remove),
               )
@@ -122,10 +122,10 @@ class _FooPageState extends State<FooPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text("Antal personer i lokalen",
-              style: Theme.of(context).textTheme.headlineSmall),
+              style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 5),
           Text('${fields[0] + fields[1] - fields[2]}',
-              style: Theme.of(context).textTheme.headlineMedium),
+              style: Theme.of(context).textTheme.headlineLarge),
         ]);
   }
 
