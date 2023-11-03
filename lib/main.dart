@@ -24,6 +24,7 @@ class FooPage extends StatefulWidget {
   const FooPage({super.key, required this.title});
 
   final String title;
+  final int fooCapacity = 149;
 
   @override
   State<FooPage> createState() => _FooPageState();
@@ -34,9 +35,8 @@ class _FooPageState extends State<FooPage> {
   // Fields[1]: NonMembers
   // Fields[2]: Smokers
   List<int> fields = [0, 0, 0];
-  final int fooCapacity = 149;
   bool _almostCapacity = false;
-  final int _capacityWarning = 135; // Number of ppl in Foo resulting in warning
+  final int _capacityWarning = 25; // Number of ppl in Foo resulting in warning
 
   void _increase(int field) {
     int tot = fields[0] + fields[1];
@@ -63,7 +63,7 @@ class _FooPageState extends State<FooPage> {
       });
     }
 
-    if (totGuests <= fields[2]) {
+    if (totGuests <= fields[2] && field != 2) {
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -129,6 +129,21 @@ class _FooPageState extends State<FooPage> {
         ]);
   }
 
+  Widget _warningBar(BuildContext context) {
+    return Visibility(
+        visible: _almostCapacity,
+        maintainSize: true, //NEW
+        maintainAnimation: true, //NEW
+        maintainState: true, //NEW
+        child: ListTile(
+            tileColor: Colors.red,
+            title: Text(
+              "Det får plats ${widget.fooCapacity - (fields[0] + fields[1])} till i lokalen",
+              style: Theme.of(context).textTheme.headlineSmall,
+              textAlign: TextAlign.center,
+            )));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,26 +151,12 @@ class _FooPageState extends State<FooPage> {
           title: Text(widget.title),
         ),
         body: Container(
-            margin: EdgeInsets.only(bottom: 60),
+            margin: EdgeInsets.only(bottom: 120),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Row(children: <Widget>[
-                    Visibility(
-                      visible: _almostCapacity,
-                      maintainSize: true, //NEW
-                      maintainAnimation: true, //NEW
-                      maintainState: true, //NEW
-                      child: Container(
-                          padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-                          color: Color.fromRGBO(244, 67, 54, 1),
-                          child: Text(
-                              "Det får plats ${fooCapacity - (fields[0] + fields[1])} till i lokalen",
-                              style:
-                                  Theme.of(context).textTheme.headlineSmall)),
-                    )
-                  ]),
-                  Expanded(flex: 2, child: _totField(context)),
+                  _warningBar(context),
+                  Expanded(flex: 3, child: _totField(context)),
                   Expanded(
                       flex: 5,
                       child: Column(
