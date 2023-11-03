@@ -37,12 +37,20 @@ class _FooPageState extends State<FooPage> {
   List<int> fields = [0, 0, 0];
   bool _almostCapacity = false;
   final int _capacityWarning = 135; // Number of ppl in Foo resulting in warning
+  final int _fullCapacity = 149;
 
   int _totGuests() {
     return fields[0] + fields[1];
   }
 
   void _increase(int field) {
+    if (_fullCapacity == _totGuests()) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => WarningDialog(type: "capacity"),
+      );
+      return;
+    }
     if (_totGuests() >= _capacityWarning && !_almostCapacity) {
       setState(() {
         _almostCapacity = true;
@@ -149,6 +157,7 @@ class _FooPageState extends State<FooPage> {
         maintainAnimation: true, //NEW
         maintainState: true, //NEW
         child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
             tileColor: Colors.red,
             title: RichText(
               textAlign: TextAlign.center,
@@ -159,7 +168,7 @@ class _FooPageState extends State<FooPage> {
                   TextSpan(
                       text: '${widget.fooCapacity - _totGuests()}',
                       style: const TextStyle(fontWeight: FontWeight.w800)),
-                  const TextSpan(text: ' till i lokalen'),
+                  const TextSpan(text: ' personer till i Foo'),
                 ],
               ),
             )));
@@ -197,6 +206,10 @@ class WarningDialog extends StatelessWidget {
   final String type;
 
   static final Map<String, Map> text = {
+    "capacity": {
+      "title": "FOO BAR ÄR FULLT",
+      "content": "Sorry, det finns inte mer plats! Folk får vänta!"
+    },
     "nonMemberFull": {
       "title": "Det finns inte plats för fler externa!",
       "content": "Säg åt dom att bli medlemmar eller vänta!!!"
