@@ -84,46 +84,56 @@ class _FooPageState extends State<FooPage> {
     }
   }
 
-  Column _counterField(BuildContext context, int field, String header) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(header, style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 5),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () => _increase(field),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(8),
+  Widget _counterField(BuildContext context, int field, String header) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 25.0),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(header, style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 7),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () => _increase(field),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(8),
+                  ),
+                  child: const Icon(Icons.add),
                 ),
-                child: const Icon(Icons.add),
-              ),
-              Text(
-                '${fields[field]}',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              ElevatedButton(
-                onPressed: () => _decrease(field),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(8),
+                SizedBox(
+                  width: 60,
+                  child: Text(
+                    '${fields[field]}',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                child: const Icon(Icons.remove),
-              )
-            ],
-          )
-        ]);
+                ElevatedButton(
+                  onPressed: () => _decrease(field),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(8),
+                  ),
+                  child: const Icon(Icons.remove),
+                )
+              ],
+            )
+          ]),
+    );
   }
 
   Column _totField(BuildContext context) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          const SizedBox(
+            height: 45,
+          ),
           Text("Antal personer i lokalen",
               style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 5),
+          const SizedBox(height: 10),
           Text('${fields[0] + fields[1] - fields[2]}',
               style: Theme.of(context).textTheme.headlineLarge),
         ]);
@@ -144,29 +154,33 @@ class _FooPageState extends State<FooPage> {
             )));
   }
 
+  Widget _buildFields(BuildContext context) {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          _totField(context),
+          Column(
+            // mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _counterField(context, 0, "Antal medlemmar"),
+              _counterField(context, 1, "Antal icke-medlemmar"),
+              _counterField(context, 2, "Röker"),
+              const SizedBox(
+                height: 70,
+              )
+            ],
+          )
+        ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: Container(
-            margin: EdgeInsets.only(bottom: 120),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  _warningBar(context),
-                  Expanded(flex: 3, child: _totField(context)),
-                  Expanded(
-                      flex: 5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          _counterField(context, 0, "Antal medlemmar"),
-                          _counterField(context, 1, "Antal icke-medlemmar"),
-                          _counterField(context, 2, "Röker")
-                        ],
-                      ))
-                ])));
+        body: Stack(
+            children: <Widget>[_warningBar(context), _buildFields(context)]));
   }
 }
