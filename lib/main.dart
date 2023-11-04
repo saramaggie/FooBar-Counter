@@ -95,6 +95,38 @@ class _FooPageState extends State<FooPage> {
     }
   }
 
+  void _resetCounter() {
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text("Reset the counter?"),
+              content:
+                  const Text("Are you SURE you want to reset the counter?"),
+              actions: <Widget>[
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStatePropertyAll(Colors.blueGrey[50])),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () => {
+                    setState(() {
+                      fields = [0, 0, 0];
+                      _almostCapacity = false;
+                    }),
+                    Navigator.pop(context, 'Reset')
+                  },
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStatePropertyAll(Colors.red[400])),
+                  child: const Text('Reset'),
+                ),
+              ],
+            ));
+  }
+
   Widget _counterField(BuildContext context, int field, String header) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 25.0),
@@ -159,6 +191,8 @@ class _FooPageState extends State<FooPage> {
         child: ListTile(
             contentPadding: const EdgeInsets.symmetric(vertical: 8),
             tileColor: Colors.red,
+            enabled: false,
+            enableFeedback: false,
             title: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -179,6 +213,11 @@ class _FooPageState extends State<FooPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
+          actions: [
+            IconButton(
+                onPressed: _resetCounter,
+                icon: const Icon(Icons.replay_outlined))
+          ],
         ),
         body: Stack(children: <Widget>[
           _warningBar(context),
@@ -192,12 +231,16 @@ class _FooPageState extends State<FooPage> {
                     _counterField(context, 0, "Antal medlemmar"),
                     _counterField(context, 1, "Antal icke-medlemmar"),
                     _counterField(context, 2, "Röker"),
-                    const SizedBox(
-                      height: 70,
-                    )
+                    const SizedBox(height: 70),
                   ],
                 )
-              ])
+              ]),
+          Positioned(
+            bottom: 5,
+            right: 5,
+            child: Text("Made by Mallow",
+                style: Theme.of(context).textTheme.labelSmall),
+          ),
         ]));
   }
 }
