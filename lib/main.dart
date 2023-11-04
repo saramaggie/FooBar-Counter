@@ -11,11 +11,11 @@ class FooBarCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Foo Bar counter',
+      title: 'Foo Bar Counter',
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: const FooPage(title: 'Foo Bar counter'),
+      home: const FooPage(title: 'Foo Bar Counter'),
     );
   }
 }
