@@ -1,16 +1,10 @@
-# foo_counter
+# Foo Bar Counter
 
-A new Flutter project.
+Simple app for keeping track of the number of people that are currently in The Student Union DISK's Foo Bar.
 
-## Getting Started
+## Future features
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[] Language choice
+[] Ability to change max number of people
+[] Ability to change when to see capacity warning
+[] Better error messages
