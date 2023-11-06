@@ -211,12 +211,37 @@ class _FooPageState extends State<FooPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+              );
+            },
+          ),
           title: Text(widget.title),
-          actions: [
-            IconButton(
-                onPressed: _resetCounter,
-                icon: const Icon(Icons.replay_outlined))
-          ],
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              ListTile(
+                  title: Text(
+                widget.title,
+                style: Theme.of(context).textTheme.titleLarge,
+              )),
+              ListTile(
+                leading: const Icon(Icons.replay_outlined),
+                title: const Text('Reset counter'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _resetCounter();
+                },
+              )
+            ],
+          ),
         ),
         body: Stack(children: <Widget>[
           _warningBar(context),
