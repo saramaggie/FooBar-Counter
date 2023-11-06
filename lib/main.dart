@@ -129,7 +129,7 @@ class _FooPageState extends State<FooPage> {
 
   Widget _counterField(BuildContext context, int field, String header) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 25.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -172,7 +172,7 @@ class _FooPageState extends State<FooPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           const SizedBox(
-            height: 45,
+            height: 35,
           ),
           Text("Antal personer i lokalen",
               style: Theme.of(context).textTheme.headlineMedium),
@@ -188,12 +188,11 @@ class _FooPageState extends State<FooPage> {
         maintainSize: true, //NEW
         maintainAnimation: true, //NEW
         maintainState: true, //NEW
-        child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(vertical: 8),
-            tileColor: Colors.red,
-            enabled: false,
-            enableFeedback: false,
-            title: RichText(
+        child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            color: Colors.red,
+            width: double.infinity,
+            child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
                 text: 'Det får plats ',
@@ -231,7 +230,7 @@ class _FooPageState extends State<FooPage> {
                     _counterField(context, 0, "Antal medlemmar"),
                     _counterField(context, 1, "Antal icke-medlemmar"),
                     _counterField(context, 2, "Röker"),
-                    const SizedBox(height: 70),
+                    const SizedBox(height: 50),
                   ],
                 )
               ]),
