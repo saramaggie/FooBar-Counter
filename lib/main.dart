@@ -140,11 +140,11 @@ class _FooPageState extends State<FooPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 ElevatedButton(
-                  onPressed: () => _increase(field),
+                  onPressed: () => _decrease(field),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(8),
                   ),
-                  child: const Icon(Icons.add),
+                  child: const Icon(Icons.remove),
                 ),
                 SizedBox(
                   width: 60,
@@ -155,11 +155,11 @@ class _FooPageState extends State<FooPage> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () => _decrease(field),
+                  onPressed: () => _increase(field),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(8),
                   ),
-                  child: const Icon(Icons.remove),
+                  child: const Icon(Icons.add),
                 )
               ],
             )
